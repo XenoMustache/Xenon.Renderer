@@ -7,25 +7,18 @@ using System.IO;
 
 namespace Xenon.Renderer {
 	public class RenderWindow {
-		public GameWindow gw;
-
-		GameWindowSettings gws;
-		NativeWindowSettings nws;
-		GameContainer gc;
 		RenderSettings rs;
 
-		//IGLFWGraphicsContext context;
+		readonly GameWindow gw;
 
 		public RenderWindow() {
-			gc = new GameContainer();
+			var gc = new GameContainer();
 
 			DeserializeSettings();
 			SerializeSettings();
 
-			gws = new GameWindowSettings();
-			nws = new NativeWindowSettings();
-
-			//nws.Title = title;
+			var gws = new GameWindowSettings();
+			var nws = new NativeWindowSettings();
 
 			// TODO: Fullscreen and fullscreen switching
 			nws.Size = new Vector2i(rs.windowWidth, rs.windowHeight);
@@ -40,6 +33,10 @@ namespace Xenon.Renderer {
 
 			gw.VSync = rs.vsync;
 			gw.Run();
+		}
+
+		public GameWindow GetGameWindow() {
+			return gw;
 		}
 
 		void CenterWindow() {

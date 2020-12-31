@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using OpenTK.Graphics.OpenGL4;
-using OpenTK.Windowing.Common;
 using System;
 using System.IO;
 using Xenon.Engine;
@@ -12,7 +11,8 @@ namespace Xenon.Renderer {
 		Script scr;
 		GameSettings gs;
 		RenderWindow rw;
-		GameState cs;
+
+		readonly GameState cs;
 
 		public GameContainer() {
 			DeserializeSettings();
@@ -26,13 +26,14 @@ namespace Xenon.Renderer {
 		public void Initialize(RenderWindow window) {
 			if (!isInitialized) {
 				rw = window;
-				rw.gw.Title = gs.name;
+				var gw = rw.GetGameWindow();
 
-				rw.gw.Load += () => Init();
-				rw.gw.RenderFrame += (e) => Draw(e);
-				rw.gw.Resize += (e) => Resize(e);
-				rw.gw.UpdateFrame += (e) => Update(e);
-				rw.gw.Unload += () => Exit();
+				gw.Title = gs.name;
+
+				gw.Load += () => Init();
+				gw.RenderFrame += (e) => Draw();
+				gw.Resize += (e) => Resize();
+				gw.UpdateFrame += (e) => Update();
 
 				isInitialized = true;
 			}
@@ -57,21 +58,19 @@ namespace Xenon.Renderer {
 			if (scr != null) scr.Execute("Start");
 		}
 
-		void Draw(FrameEventArgs args) {
+		void Draw() {
 			GL.Clear(ClearBufferMask.ColorBufferBit);
 
-			rw.gw.SwapBuffers();
+			rw.GetGameWindow().SwapBuffers();
 		}
 
-		void Resize(ResizeEventArgs args) {
-			GL.Viewport(0, 0, rw.gw.Size.X, rw.gw.Size.Y);
+		void Resize() {
+			GL.Viewport(0, 0, rw.GetGameWindow().Size.X, rw.GetGameWindow().Size.Y);
 		}
 
-		void Update(FrameEventArgs args) {
+		void Update() {
 			if (scr != null) scr.Execute("Update");
 		}
-
-		void Exit() { }
 
 		GameState DeserializeState(string file) {
 			var str = Path.Combine(gs.gameLocation, "States", file);
