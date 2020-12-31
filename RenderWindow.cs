@@ -6,28 +6,26 @@ namespace Xenon.Renderer {
 	public class RenderWindow {
 		readonly GameWindow gw;
 
-		public RenderWindow() {
-			var gc = new GameContainer();
-			var rs = new RenderSettings();
+		public RenderWindow(RenderSettings settings) {
+			Utilities.HideConsole(settings.hideConsole);
 
-			rs.Deserialize();
-			rs.Serialize();
+			var gc = new GameContainer();
 
 			var gws = new GameWindowSettings();
 			var nws = new NativeWindowSettings();
 
-			// TODO: Fullscreen and fullscreen switching
-			nws.Size = new Vector2i(rs.resolution[0], rs.resolution[1]);
+			if (settings.fullscreen)
+				nws.WindowState = OpenTK.Windowing.Common.WindowState.Fullscreen;
+
+			nws.Size = new Vector2i(settings.resolution[0], settings.resolution[1]);
 
 			gw = new GameWindow(gws, nws);
 
 			gc.Initialize(this);
 
-			if (rs.centerWindow) CenterWindow();
+			if (settings.centerWindow) CenterWindow();
 
-			Utilities.HideConsole(rs.hideConsole);
-
-			gw.VSync = rs.vsync;
+			gw.VSync = settings.vsync;
 			gw.Run();
 		}
 

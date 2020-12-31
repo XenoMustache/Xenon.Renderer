@@ -1,7 +1,12 @@
 ﻿namespace Xenon.Renderer {
-	class Program {
+	static class Program {
 		static void Main(string[] args) {
-			new RenderWindow();
+			var settings = new RenderSettings();
+
+			settings.Deserialize();
+			settings.Serialize();
+
+			new RenderWindow(settings);
 		}
 	}
 }

@@ -22,9 +22,9 @@ namespace Xenon.Renderer {
 		}
 
 		public void Deserialize() {
-			if (File.Exists("RenderSettings.json")) {
-				JsonConvert.PopulateObject(File.ReadAllText("RenderSettings.json"), this);
-				Console.WriteLine("\nRender settings file found, loading...");
+			if (File.Exists("Config\\RenderSettings.json")) {
+				JsonConvert.PopulateObject(File.ReadAllText("Config\\RenderSettings.json"), this);
+				Console.WriteLine("Render settings file found, loading...");
 			}
 			else {
 				Console.WriteLine("\nNo render settings file found, generating...");
@@ -32,11 +32,11 @@ namespace Xenon.Renderer {
 		}
 
 		public void Serialize() {
-			if (File.Exists("RenderSettings.json")) File.Delete("RenderSettings.json");
+			if (File.Exists("Config\\RenderSettings.json")) File.Delete("Config\\RenderSettings.json");
 
 			var json = JsonConvert.SerializeObject(this, Formatting.Indented, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
 
-			File.WriteAllText("RenderSettings.json", json);
+			File.WriteAllText("Config\\RenderSettings.json", json);
 			Console.WriteLine($"\n{"RenderSettings.json"}:\n{json}");
 		}
 	}

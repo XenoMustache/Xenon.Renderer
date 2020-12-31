@@ -29,4 +29,13 @@
 		<ProjectReference Include="..\Xenon.Engine\Xenon.Engine.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<None Update="Config\GameSettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Config\RenderSettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
 </Project>
