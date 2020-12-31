@@ -44,8 +44,13 @@ namespace Xenon.Renderer {
 		void CompileScripts() {
 			Console.WriteLine("\nStarting script compilation...");
 
-			if (cs != null) {
-				var str = Path.Combine(gs.gameLocation, "Scripts", cs.script);
+			var str = "";
+
+			if (cs != null && cs.script != null) {
+				if (gs.gameLocation != null)
+					str = Path.Combine(gs.gameLocation, "Scripts", cs.script);
+				else
+					str = Path.Combine("Scripts", cs.script);
 
 				scr = new Script(cs.script);
 				scr.Compile(str);

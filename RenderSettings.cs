@@ -26,9 +26,8 @@ namespace Xenon.Renderer {
 				JsonConvert.PopulateObject(File.ReadAllText("Config\\RenderSettings.json"), this);
 				Console.WriteLine("Render settings file found, loading...");
 			}
-			else {
-				Console.WriteLine("\nNo render settings file found, generating...");
-			}
+			else
+				Console.WriteLine("No render settings file found, generating...");
 		}
 
 		public void Serialize() {
