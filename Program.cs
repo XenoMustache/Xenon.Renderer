@@ -6,7 +6,7 @@
 			settings.Deserialize();
 			settings.Serialize();
 
-			new RenderWindow(settings);
+			_ = new RenderWindow(settings);
 		}
 	}
 }

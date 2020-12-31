@@ -1,5 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Xenon.Engine;
 
@@ -8,19 +9,26 @@ namespace Xenon.Renderer {
 		bool isInitialized;
 
 		readonly GameSettings gs;
-
-		Script scr;
+		readonly List<GameObject> objects;
+		readonly List<Script> scripts;
 		RenderWindow rw;
-
-		readonly GameState cs;
 
 		public GameContainer() {
 			gs = new GameSettings();
 			gs.Deserialize();
 			gs.Serialize();
 
-			cs = new GameState(gs);
+			// TODO: State changing
+			var cs = new GameState(gs);
 			cs.Deserialize($"{gs.stateIndex[0]}");
+			cs.Serialize($"{gs.stateIndex[0]}");
+
+			objects = new List<GameObject>();
+			scripts = new List<Script>();
+
+			for (var i = 0; i < cs.objects.Count; i++) {
+				objects.Add(cs.objects[i].Instantiate(gs));
+			}
 
 			CompileScripts();
 		}
@@ -44,16 +52,23 @@ namespace Xenon.Renderer {
 		void CompileScripts() {
 			Console.WriteLine("\nStarting script compilation...");
 
-			var str = "";
+			for (var i = 0; i < objects.Count; i++) {
+				for (var j = 0; j < objects[i].scripts.Count; j++) {
+					var script = objects[i].scripts[j];
+					var str = "";
 
-			if (cs != null && cs.script != null) {
-				if (gs.gameLocation != null)
-					str = Path.Combine(gs.gameLocation, "Scripts", cs.script);
-				else
-					str = Path.Combine("Scripts", cs.script);
+					if (objects[i] != null && script != null) {
+						if (gs.gameLocation != null)
+							str = Path.Combine(gs.gameLocation, "Scripts", script);
+						else
+							str = Path.Combine("Scripts", script);
 
-				scr = new Script(cs.script);
-				scr.Compile(str);
+						var scr = new Script(script);
+						scr.Compile(str);
+
+						scripts.Add(scr);
+					}
+				}
 			}
 
 			Console.WriteLine("Script compilation successful!");
@@ -62,7 +77,9 @@ namespace Xenon.Renderer {
 		void Init() {
 			GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-			if (scr != null) scr.Execute("Start");
+			for (var i = 0; i < scripts.Count; i++) {
+				if (scripts[i] != null) scripts[i].Execute("Start");
+			}
 		}
 
 		void Draw() {
@@ -76,7 +93,9 @@ namespace Xenon.Renderer {
 		}
 
 		void Update() {
-			if (scr != null) scr.Execute("Update");
+			for (var i = 0; i < scripts.Count; i++) {
+				if (scripts[i] != null) scripts[i].Execute("Update");
+			}
 		}
 	}
 }
